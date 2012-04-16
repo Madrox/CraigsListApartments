@@ -3,6 +3,8 @@ import urllib
 import re
 from common.models import Post,Extraction,Crawler
 from datetime import datetime
+from django.core.mail import send_mail
+import settings
 
 
 class Command(BaseCommand):
@@ -21,6 +23,19 @@ class Command(BaseCommand):
                     post.crawler = crawler
                     if post.is_match: 
                         self.stdout.write(" Yes!\n")
+                        if crawler.hits_email is not None:
+                            send_mail(
+                                'Apartment Found: {0}'.format(post.headline), 
+                                settings.EMAIL_BODY.format(
+                                        post.link,
+                                        post.headline,
+                                        post.cost,
+                                        post.bedrooms,
+                                        post.raw_text
+                                    ), 
+                                settings.EMAIL_FROM_USER,
+                                [crawler.hits_email], 
+                                fail_silently=False)
                     else: 
                         self.stdout.write(" No\n")
 

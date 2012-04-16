@@ -16,9 +16,11 @@ This is a django app, but it's not really designed to live in the wild where mul
 ## Running
 1. Install
 2. Add your crawlers. Right now, this is a manual process. You have to input `http://PATH_TO_SITE/new_crawler.json?url=CL_URL` into your browser, where `CL_URL` is the url of a Craig's List apartment list, like `http://losangeles.craigslist.org/lac/apa/`
+-- You can also pass `email=your@emailaddress.com` to get emailed whenever a match is found
 3. Access the UI (or query the database directly)
 
-
+### Setting up your filter
+The whole purpose of this tool is to be able to write your own custom filters using the power of python. To do this, you'll want to edit `common/filters.py` using whatever criteria you like. Feel free to go nuts here. Import NLTK or whatever it takes.
 
 
 

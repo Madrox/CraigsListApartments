@@ -2,12 +2,6 @@
 
 
 
-# This determines whether or not posts that don't meet your filter
-# gets recorded or not. Posts that are recorded that don't match
-# will have is_match set to False.
-INSERT_ALL_POSTS = True
-
-
 
 
 
