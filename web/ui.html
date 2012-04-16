@@ -1,0 +1,155 @@
+<html>
+<head>
+	<title>Craig's List Apartment Browser</title>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+	<!-- We're not using bootstrap because I don't want to deal with the includes -->
+	<style>
+	#container {
+		width: 800px;
+		margin: auto;
+	}
+	#nav {
+		position: absolute;
+		width: 800px;
+		margin: auto;
+		text-align: right;
+		top: 10px;
+	}
+	#nav a {
+		color: gray;
+		font-size: 20pt;
+		text-decoration: none;
+	}
+	#nav a:hover {
+		color: orange;
+	}
+	#crawler-setup {
+
+	}
+	#list {
+		position: absolute;
+		bottom: 10px;
+		top: 70px;
+		width: 800px;
+	}
+	#listings {
+		width: 300px;
+		height: 100%;
+		float: left;
+		padding: 0px;
+		overflow-y: scroll;
+		overflow-x: hidden;
+	}
+	.listing {
+		font-size: 9pt;
+		width: 100%;
+		padding: 10px;
+		cursor: hand;
+	}
+	.listing:nth-child(odd) {
+		background-color: #dedede;
+	}
+	.listing.active {
+		background-color: orange;
+	}
+	.listing .headline {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		width: 100%;
+		height: 10pt;
+		white-space: nowrap;
+		font-weight: bolder;
+	}
+	#details {
+		height: 100%;
+		width: 480px;
+		float: left;
+		overflow: scroll;
+		padding: 10px;
+	}
+	body {
+		font-family: Helvetica Neue, Helvetica, sans-serif;
+	}
+	h1 {
+		text-shadow: 2px 2px 2px silver;
+	}
+	h2 {
+		text-shadow: 1px 1px 1px silver;
+		font-size: 12pt;
+	}
+	</style>
+</head>
+<body>
+	<a href="http://github.com/Madrox/craigslist"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/edc6dae7a1079163caf7f17c60495bbb6d027c93/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub"></a>
+<div id="container">
+	<h1>Apartment Finder</h1>
+	<div id="nav">
+		<a href="#" id="show-setup" title="Setup">&#9881;</a>
+	</div>
+	<div id="crawler-setup" class="hide">
+
+	</div>
+	<div id="list">
+		<div id="listings">
+		</div>
+		<div id="details" class="hide">
+			<h2 id="details-headline"></h2>
+			<a target="_blank" id="details-link">Post &#10063;</a>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	$('.hide').hide();
+
+	$('#show-setup').click(function(e) {
+		$('#crawler-setup').show();
+
+		e.preventDefault();
+	});
+
+	function details(e) {
+		var post = $(this).data('post');
+		console.log(post);
+		e.preventDefault();
+		$('.active').removeClass('active');
+		$(this).addClass('active');
+
+		$('#details-headline').text(post.fields.headline);
+		$('#details-link').attr('href',post.pk)
+
+		$('#details').show();
+	}
+
+	function time_ago(date_str) {
+		var d = Date.parse(date_str);
+		var minutes = (Date.now()-d)/1000/60;
+		if(minutes < 1) return "Less than a minute";
+		if(minutes < 60) return "Less than an hour";
+		if(minutes < 60*24) return "Less than 24 hours ago";
+		return Math.round(minutes/60/24) + " days ago";
+	}
+
+	function list() {
+		$.getJSON("list.json",function(data) {
+			$('#listings').html('');
+			$.each(data.posts,function(i,post) {
+				console.log(post);
+				var listing = $('<div class="listing"></div>')
+					.append($('<div class="headline">'+post.fields.headline+'</div>'))
+					.append($('<div class="cost">$'+post.fields.cost+'</div>'))
+					.append($('<div class="bedrooms">Bedrooms: '+post.fields.bedrooms+'</div>'))
+					.append($('<div class="add_date">'+time_ago(post.fields.add_date)+' ago</div>'))
+					.data('post',post)
+					.click(details);
+				$('#listings').append(listing);
+			});
+		});
+	}
+
+	list()
+
+
+</script>
+</body>
+</html>

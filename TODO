@@ -1,0 +1,14 @@
+
+
+
+
+- Email alerts when there's a new match
+- Parse images
+- Kick off crawler in separate process
+	- PID control
+- UI
+	- List items
+	- Filters
+	- Display item details
+
+
